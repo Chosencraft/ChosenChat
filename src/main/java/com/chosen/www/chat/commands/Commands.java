@@ -114,7 +114,12 @@ public class Commands implements Listener,CommandExecutor {
 	private boolean channelCommand( Player player, String activeChannel ,String[] args) {
 		if ( args.length < 1 ) {
 			//add a help message
-			player.sendMessage(getChannelStats(activeChannel));
+			String[] stats = getChannelStats(activeChannel);
+			
+			for ( String s : stats) {
+				player.sendMessage(ChatColor.translateAlternateColorCodes('&', s));
+			}
+			
 			return true;
 		} else {
 		
@@ -125,9 +130,11 @@ public class Commands implements Listener,CommandExecutor {
 				break;
 				
 			case "list":
+				player.sendMessage(ChatColor.GREEN + "-----{Channel List}-----");
 				for ( ChatChannel c : channels.values() ) {
-					player.sendMessage(c.getColor() + c.getName());
+					player.sendMessage(ChatColor.translateAlternateColorCodes('&', c.getColor() + c.getName()));
 				}
+				player.sendMessage(ChatColor.GREEN + "------------------------");
 				break;
 			
 			case "create":
@@ -214,7 +221,6 @@ public class Commands implements Listener,CommandExecutor {
 				ChatColor.WHITE + "Color: " + color + channel.getColor()
 		};
 		
-		
 		return stats;
 	}
 
@@ -252,7 +258,7 @@ public class Commands implements Listener,CommandExecutor {
 				} else {
 					cfManager.set("channels.yml", channelName, null);
 				}
-				return channelColor + "set channel permanence to: " + value;
+				return ChatColor.translateAlternateColorCodes('&', channelColor + "set channel permanence to: " + value);
 			}
 		
 		case "local":
@@ -266,7 +272,7 @@ public class Commands implements Listener,CommandExecutor {
 					cfManager.set("channels.yml", channelName + ".local", channel.isLocal());
 				}
 				
-				return channelColor + "set channel localness to: " + value;
+				return ChatColor.translateAlternateColorCodes('&', channelColor + "set channel localness to: " + value);
 			}
 			
 		case "private":
@@ -280,7 +286,7 @@ public class Commands implements Listener,CommandExecutor {
 					cfManager.set("channels.yml", channelName + ".private", channel.isLocal());
 				}
 				
-				return channelColor + "set channel privacy to: " + value;
+				return ChatColor.translateAlternateColorCodes('&', channelColor + "set channel privacy to: " + value);
 			}
 			
 		case "color":
@@ -310,7 +316,7 @@ public class Commands implements Listener,CommandExecutor {
 					cfManager.set("channels.yml", channelName + ".color", channel.getColorToString());
 				}
 				
-				return channelColor + "Set channel color to: " + newColor;
+				return ChatColor.translateAlternateColorCodes('&', channelColor + "Set channel color to: " + newColor);
 			}
 		
 		case "colour":
@@ -340,7 +346,7 @@ public class Commands implements Listener,CommandExecutor {
 					cfManager.set("channels.yml", channelName + ".color", channel.getColorToString());
 				}
 				
-				return channelColor + "Set channel color to: " + newColor;
+				return ChatColor.translateAlternateColorCodes('&', channelColor + "Set channel colour to: " + newColor);
 			}
 		default:
 			return ChatColor.RED + "That setting doesn't exist!";
