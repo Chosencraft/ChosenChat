@@ -26,7 +26,7 @@ public class EventClass implements Listener {
 	Commands commands;
 	Permissions permissions;
 	
-	HashMap<String, String> playerChannels = new HashMap<String, String>();
+	public HashMap<String, String> playerChannels = new HashMap<String, String>();
 	
 	public EventClass( Plugin mainPlugin ) {
 		plugin = mainPlugin;
@@ -34,6 +34,11 @@ public class EventClass implements Listener {
 		commands = ((MainChat)mainPlugin).commands;
 		permissions = new Permissions(mainPlugin);
 		
+	}
+	
+	public void updateChannel(String player) {
+		
+		playerChannels.put(player, cfManager.get("players.yml", player));
 	}
 	
 	@EventHandler

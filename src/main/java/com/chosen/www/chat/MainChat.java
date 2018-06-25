@@ -22,6 +22,7 @@ public class MainChat extends JavaPlugin {
 		this.getCommand("channel").setExecutor(commands);
 		
 		events = new EventClass(this);
+		commands.updateEvents(this);
 		getServer().getPluginManager().registerEvents(events, this);
 		//update configs for all players in the event of a hot reload
 		for ( Player p : Bukkit.getOnlinePlayers() ) {
@@ -32,7 +33,7 @@ public class MainChat extends JavaPlugin {
 	}
 	
 	public void onDisable() {
-		
+		commands.shutdown();
 		getServer().getConsoleSender().sendMessage(ChatColor.RED + "ChosenChat disabled");
 	}
 	

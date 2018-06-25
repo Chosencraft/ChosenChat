@@ -30,6 +30,10 @@ public class ChatChannel {
 		return playerList.size();
 	}
 	
+	public boolean isEmpty() {
+		return playerList.isEmpty();
+	}
+	
 	public void join( Player player ) {
 		playerList.add(player);
 	}
@@ -107,21 +111,124 @@ public class ChatChannel {
 			return ChatColor.YELLOW + "Yellow";
 			
 		case "&k":
+			color = "&k";
 			return ChatColor.MAGIC + "magic";
 			
 		case "&l":
+			color = "&l";
 			return ChatColor.BOLD + "bold";
 			
 		case "&m":
+			color = "&m";
 			return ChatColor.STRIKETHROUGH + "strikethrough";
 		
 		case "&n":
+			color = "&n";
 			return ChatColor.UNDERLINE + "underline";
 			
 		case "&o":
+			color = "&o";
 			return ChatColor.ITALIC + "italic";
 			
 		case "&r":
+			color = "&r";
+			return ChatColor.RESET + "reset";
+		
+		default:
+			return color + "the same color, because invalid color";
+		}
+	}
+	
+public String setColorFromString( String col ) {
+		
+		switch (col.toLowerCase()) {
+		
+		case "aqua":
+			color = "&b";
+			return ChatColor.AQUA + "Aqua";
+			
+		case "black":
+			color = "&0";
+			return ChatColor.BLACK + "Black";
+			
+		case "blue":
+			color = "&9";
+			return ChatColor.BLUE + "Blue";
+			
+		case "dark_aqua":
+			color = "&3";
+			return ChatColor.DARK_AQUA + "Dark Aqua";
+			
+		case "dark_blue":
+			color = "&1";
+			return ChatColor.DARK_BLUE + "Dark Blue";
+			
+		case "dark_gray":
+			color = "&8";
+			return ChatColor.DARK_GRAY + "Dark Gray";
+			
+		case "dark_green":
+			color = "&2";
+			return ChatColor.DARK_GREEN + "Dark Green";
+			
+		case "dark_purple":
+			color = "&5";
+			return ChatColor.DARK_PURPLE + "Dark Purple";
+			
+		case "dark_red":
+			color = "&4";
+			return ChatColor.DARK_RED + "Dark Red";
+			
+		case "gold":
+			color = "&6";
+			return ChatColor.GOLD + "Gold";
+			
+		case "gray":
+			color = "&7";
+			return ChatColor.GRAY + "Gray";
+			
+		case "green":
+			color = "&a";
+			return ChatColor.GREEN + "Green";
+			
+		case "light_purple":
+			color = "&d";
+			return ChatColor.LIGHT_PURPLE + "Light Purple";
+			
+		case "red":
+			color = "&c";
+			return ChatColor.RED + "Red";
+			
+		case "white":
+			color = "&f";
+			return ChatColor.WHITE + "White";
+			
+		case "yellow":
+			color = "&e";
+			return ChatColor.YELLOW + "Yellow";
+			
+		case "magic":
+			color = "&k";
+			return ChatColor.MAGIC + "magic";
+			
+		case "bold":
+			color = "&l";
+			return ChatColor.BOLD + "bold";
+			
+		case "strikethrough":
+			color = "&m";
+			return ChatColor.STRIKETHROUGH + "strikethrough";
+		
+		case "underline":
+			color = "&n";
+			return ChatColor.UNDERLINE + "underline";
+			
+		case "italic":
+			color = "&o";
+			return ChatColor.ITALIC + "italic";
+			
+		case "reset":
+			color = "&r";
 			return ChatColor.RESET + "reset";
 		
 		default:

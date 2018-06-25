@@ -14,6 +14,7 @@ import com.chosen.www.chat.ChatChannel;
 import com.chosen.www.chat.ConfigManager;
 import com.chosen.www.chat.MainChat;
 import com.chosen.www.chat.Permissions;
+import com.chosen.www.chat.events.EventClass;
 
 
 
@@ -29,11 +30,12 @@ public class Commands implements Listener,CommandExecutor {
 	
 	Plugin plugin;
 	ConfigManager cfManager;
-	
+	EventClass events;
 	
 	public Commands( Plugin mainPlugin ) {
 		plugin = mainPlugin;
 		cfManager = ((MainChat) mainPlugin).cfgm;
+		events = ((MainChat) mainPlugin).events;
 		
 		Iterable<String> permanentChannels = cfManager.getConfig("channels.yml").getConfig().getKeys(false);
 		//Initial setup of General Global chat if it doesn't exist
@@ -57,6 +59,21 @@ public class Commands implements Listener,CommandExecutor {
 			
 			ChatChannel newChannel = new ChatChannel(channel, permanent, local, locked, color );
 			channels.put(channel, newChannel);
+		}
+	}
+	
+	public void updateEvents( Plugin mainPlugin ) {
+		events = ((MainChat) mainPlugin).events;
+	}
+	
+	public void shutdown(  ) {
+		for ( String s : channels.keySet() ) {
+			ChatChannel channel = channels.get(s);
+			if ( !channel.isPermanent() ) {
+				for ( Player p : channel.getPlayers() ) {
+					swapChannel(p, "General");
+				}
+			}
 		}
 	}
 	
@@ -238,7 +255,7 @@ public class Commands implements Listener,CommandExecutor {
 
 	private void createChannel(String channelName) {
 		
-		ChatChannel newChannel = new ChatChannel(channelName, false, false, false, "white");
+		ChatChannel newChannel = new ChatChannel(channelName, false, false, false, "&f");
 		channels.put(channelName, newChannel);
 		
 	}
@@ -322,7 +339,12 @@ public class Commands implements Listener,CommandExecutor {
 					ChatColor.WHITE + "white, " + 
 					ChatColor.YELLOW + "\nyellow";
 			} else {
-				String newColor = channels.get(channelName).setColor(value);
+				String newColor;
+				if ( value.length() <= 2 ) {
+					newColor = channels.get(channelName).setColor(value);
+				} else {
+					newColor = channels.get(channelName).setColorFromString(value);
+				}
 				
 				if ( channel.isPermanent() ) {
 					cfManager.set("channels.yml", channelName + ".color", channel.getColorToString());
@@ -368,23 +390,20 @@ public class Commands implements Listener,CommandExecutor {
 	public void swapChannel(Player player, String joinedChannel) {
 		String playerUUID = player.getUniqueId().toString().replace("-", "");
 		String formerChannel = cfManager.get("players.yml", playerUUID );
+		String oldColor = channels.get(formerChannel).getColor();
 		
-		player.sendMessage("leaving the " + formerChannel + " channel");
+		player.sendMessage(ChatColor.translateAlternateColorCodes('&', oldColor + "leaving the " + formerChannel + " channel") );
 		
 		ChatChannel leftChannel = channels.get(formerChannel);
 		leftChannel.leave(player);
 		cfManager.set("players.yml", playerUUID , joinedChannel);
 		
-		//need to move this so empty channels only get removed on server restart
-		if ( leftChannel.size() == 0 && !leftChannel.isPermanent() ) {
-			channels.remove(formerChannel);
-		}
-		
 		channels.get(joinedChannel).join(player);
-		String activeChannel = cfManager.get("players.yml", playerUUID );
-		String color = channels.get(activeChannel).getColor();
+		String currentChannel = cfManager.get("players.yml", playerUUID );
+		events.updateChannel(playerUUID);
+		String color = channels.get(currentChannel).getColor();
 		
-		player.sendMessage(ChatColor.translateAlternateColorCodes('&', color + "you joined the " + activeChannel + " channel"));
+		player.sendMessage(ChatColor.translateAlternateColorCodes('&', color + "you joined the " + currentChannel + " channel"));
 	}
 
 }
