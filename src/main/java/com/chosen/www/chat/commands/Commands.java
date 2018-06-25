@@ -134,7 +134,7 @@ public class Commands implements Listener,CommandExecutor {
 				for ( ChatChannel c : channels.values() ) {
 					player.sendMessage(ChatColor.translateAlternateColorCodes('&', c.getColor() + c.getName()));
 				}
-				player.sendMessage(ChatColor.GREEN + "------------------------");
+				player.sendMessage(ChatColor.GREEN + "----------------------");
 				break;
 			
 			case "create":

@@ -99,14 +99,58 @@ public class EventClass implements Listener {
 				}
 			}
 		}
+		
+		String sentText = permissionCheck(player, event.getMessage());
+		
 		//channel character
 		String message = channelColor + "[" + channelChar + "] " 
 				//player name
 				+ "&f" + player.getDisplayName() + "&7: " 
 				//message
-				+ channelColor + event.getMessage();
+				+ channelColor + sentText;
 		
 		event.setFormat(ChatColor.translateAlternateColorCodes('&', message));
+	}
+
+	private String permissionCheck(Player player, String message) {
+		
+		String output = message;
+		String colorCodes = "&[0-9a-f]";
+		String formatCodes = "&[k-or]";
+		
+		if ( !player.hasPermission("chosenchat.chat.color") ) {
+			output = output.replaceAll(colorCodes, "");
+		}
+		
+		if ( !player.hasPermission("chosenchat.chat.format") ) {
+			output = output.replaceAll(formatCodes, "");
+		} else {
+			if ( !player.hasPermission("chosenchat.chat.format.bold") ) {
+				output = output.replace("&l", "");
+			}
+		
+			if ( !player.hasPermission("chosenchat.chat.format.strikethrough") ) {
+				output = output.replaceAll("&m", "");
+			}
+			
+			if ( !player.hasPermission("chosenchat.chat.format.underline") ) {
+				output = output.replace("&n", "");
+			}
+		
+			if ( !player.hasPermission("chosenchat.chat.format.italic") ) {
+				output = output.replace("&o", "");
+			}
+			
+			if ( !player.hasPermission("chosenchat.chat.format.reset") ) {
+				output = output.replace("&r", "");
+			}
+		
+			if ( !player.hasPermission("chosenchat.chat.format.magic") ) {
+				output = output.replace("&k", "");
+			}
+		}
+		
+		return output;
 	}
 	
 }

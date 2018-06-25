@@ -14,6 +14,13 @@ public class Permissions {
 	public static String COMMAND_EDIT_CHANNEL = "chosenchat.command.set";
 	public static String COMMAND_MAKE_PERMANENT = "chosenchat.command.set.permanent";
 	
+	public static String CHAT_COLOR = "chosenchat.chat.color";
+	public static String CHAT_FORMAT = "chosenchat.chat.format";
+	public static String CHAT_FORMAT_BOLD = "chosenchat.chat.format.bold";
+	public static String CHAT_FORMAT_STRIKETHROUGH = "chosenchat.chat.format.strikethrough";
+	public static String CHAT_FORMAT_UNDERLINE = "chosenchat.chat.format.underline";
+	public static String CHAT_FORMAT_ITALIC = "chosenchat.chat.format.italic";
+	public static String CHAT_FORMAT_RESET = "chosenchat.chat.format.reset";
 	public static String CHAT_FORMAT_MAGIC = "chosenchat.chat.format.magic";
 	
 	ConfigManager cfManager;
