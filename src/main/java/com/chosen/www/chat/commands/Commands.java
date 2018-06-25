@@ -41,6 +41,10 @@ public class Commands implements Listener,CommandExecutor {
 		if ( cfManager.get("channels.yml", "General") == null ) {
 			ChatChannel general = new ChatChannel("General", true, false, false, "&2" );
 			channels.put("General", general);
+			cfManager.set("channels.yml", "General" + ".local", general.isLocal());
+			cfManager.set("channels.yml", "General" + ".private", general.isPrivate());
+			cfManager.set("channels.yml", "General" + ".color", general.getColor());
+			cfManager.set("channels.yml", "General" + ".shortCut", general.getName().toLowerCase());
 			System.out.println("created general chat because it did not exist");
 		}
 		
@@ -69,7 +73,7 @@ public class Commands implements Listener,CommandExecutor {
 			
 			Player player = (Player) sender;
 			String playerUUID = player.getUniqueId().toString().replace("-", "");
-			String activeChannel = cfManager.get("players.yml", playerUUID + ".activeChannel");
+			String activeChannel = cfManager.get("players.yml", playerUUID);
 			
 			if ( !player.hasPermission(Permissions.COMMAND_GENERAL) ) {
 				player.sendMessage(ChatColor.RED + cannotInto);
@@ -130,11 +134,11 @@ public class Commands implements Listener,CommandExecutor {
 				break;
 				
 			case "list":
-				player.sendMessage(ChatColor.GREEN + "-----{Channel List}-----");
+				player.sendMessage("-----{Channel List}-----");
 				for ( ChatChannel c : channels.values() ) {
 					player.sendMessage(ChatColor.translateAlternateColorCodes('&', c.getColor() + c.getName()));
 				}
-				player.sendMessage(ChatColor.GREEN + "----------------------");
+				player.sendMessage("----------------------");
 				break;
 			
 			case "create":
@@ -193,7 +197,13 @@ public class Commands implements Listener,CommandExecutor {
 			
 				if ( args.length < 2 ) {
 					//add a help message
+					String[] stats = getChannelStats(activeChannel);
+					
+					for ( String s : stats) {
+						player.sendMessage(ChatColor.translateAlternateColorCodes('&', s));
+					}
 					player.sendMessage(ChatColor.RED + "Usage: /channel set <channel name> <setting> <value>");
+					
 					break;
 				} else if ( args.length < 3 ) {
 					player.sendMessage(setChannel( player, activeChannel, args[1], null));
@@ -215,10 +225,12 @@ public class Commands implements Listener,CommandExecutor {
 		String color = channel.getColor();
 		String[] stats = {
 				color + "Current Channel: " + ChatColor.WHITE + channel.getName(),
+				"---{Channel Settings}---",
 				color + "Permanent: " + ChatColor.WHITE + channel.isPermanent(),
 				color + "Local: " + ChatColor.WHITE + channel.isLocal(),
 				color + "Private: " + ChatColor.WHITE + channel.isPrivate(),
-				ChatColor.WHITE + "Color: " + color + channel.getColor()
+				ChatColor.WHITE + "Color: " + color + channel.getColorToString(),
+				"---------------------"
 		};
 		
 		return stats;
@@ -355,20 +367,21 @@ public class Commands implements Listener,CommandExecutor {
 
 	public void swapChannel(Player player, String joinedChannel) {
 		String playerUUID = player.getUniqueId().toString().replace("-", "");
-		String formerChannel = cfManager.get("players.yml", playerUUID + ".activeChannel");
+		String formerChannel = cfManager.get("players.yml", playerUUID );
 		
 		player.sendMessage("leaving the " + formerChannel + " channel");
 		
 		ChatChannel leftChannel = channels.get(formerChannel);
 		leftChannel.leave(player);
-		cfManager.set("players.yml", playerUUID + ".activeChannel", joinedChannel);
+		cfManager.set("players.yml", playerUUID , joinedChannel);
 		
+		//need to move this so empty channels only get removed on server restart
 		if ( leftChannel.size() == 0 && !leftChannel.isPermanent() ) {
 			channels.remove(formerChannel);
 		}
 		
 		channels.get(joinedChannel).join(player);
-		String activeChannel = cfManager.get("players.yml", playerUUID + ".activeChannel");
+		String activeChannel = cfManager.get("players.yml", playerUUID );
 		String color = channels.get(activeChannel).getColor();
 		
 		player.sendMessage(ChatColor.translateAlternateColorCodes('&', color + "you joined the " + activeChannel + " channel"));
