@@ -26,22 +26,25 @@ public class Permissions {
 	ConfigManager cfManager;
 	public HashMap<String, String> groups = new HashMap<String, String>();
 	
-	public Permissions( Plugin mainPlugin) {
+	public Permissions( Plugin mainPlugin ) {
 		
 		cfManager = ((MainChat) mainPlugin).cfgm;
 		
-		if ( cfManager.get("groups.yml", "chosenchat.groups.default") == null ) {
-			groups.put("default", "&7default");
-			System.out.println("created default group because it did not exist");
-		}
 		
 		//need to loop thru all groups/ranks in config and add them to a list
-		Set<String> configGroups = cfManager.getConfig("groups.yml").getConfig().getConfigurationSection("chosenchat.groups").getKeys(false);
+		Set<String> configGroups = cfManager.getConfig("groups.yml").getConfig().getKeys(false);
 		for ( String key : configGroups ) {
-			groups.put(key, cfManager.get("groups.yml", "chosenchat.groups." + key));
+			groups.put(key, cfManager.get("groups.yml", key));
 		}
 	}
 	
+	public String getGroup( String playerUUID ) {
+		return groups.get(playerUUID);
+	}
 	
+	public void setGroup( String playerUUID, String group) {
+		groups.put(playerUUID, group);
+		cfManager.set("groups.yml", playerUUID, group);
+	}
 	
 }

@@ -9,7 +9,10 @@ import org.bukkit.plugin.Plugin;
 import com.chosen.www.chat.ChatChannel;
 import com.chosen.www.chat.ConfigManager;
 import com.chosen.www.chat.MainChat;
+import com.chosen.www.chat.Permissions;
 import com.chosen.www.chat.commands.Commands;
+
+import java.util.HashMap;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -21,48 +24,48 @@ public class EventClass implements Listener {
 	Plugin plugin;
 	ConfigManager cfManager;
 	Commands commands;
+	Permissions permissions;
+	
+	HashMap<String, String> playerChannels = new HashMap<String, String>();
 	
 	public EventClass( Plugin mainPlugin ) {
 		plugin = mainPlugin;
 		cfManager = ((MainChat) mainPlugin).cfgm;
 		commands = ((MainChat)mainPlugin).commands;
+		permissions = new Permissions(mainPlugin);
+		
 	}
 	
 	@EventHandler
 	public void onJoin( PlayerJoinEvent event) {
 		
 		Player player = event.getPlayer();
-		String joinMessage = playerJoined(player);
-		
-		if ( joinMessage != null) {
-			event.setJoinMessage(joinMessage);
-		}
+		playerJoined(player);
 	}
 	
-	public String playerJoined( Player player) {
+	public void playerJoined( Player player) {
 		
 		String playerUUID = player.getUniqueId().toString().replace("-", "");
 		
 		if ( cfManager.get("players.yml", playerUUID) == null) {
-			cfManager.set("players.yml", playerUUID + ".username", player.getName());
-			cfManager.set("players.yml", playerUUID + ".activeChannel", "General");
+			cfManager.set("players.yml", playerUUID, "General");
 			commands.getChannel("General").join(player);
+			permissions.setGroup(playerUUID, "&7default");
 			
 			plugin.getServer().getConsoleSender().sendMessage(ChatColor.AQUA + "new player " + player.getName() + " joined");
-			return ChatColor.LIGHT_PURPLE + "Welcome " + player.getName() + " to the server!";
-		} else {
-			//if the player has joined before but changed their username
-			cfManager.set("players.yml", playerUUID + ".username", player.getName());
-			return null;
 		}
+		
+		playerChannels.put(playerUUID, cfManager.get("players.yml", playerUUID));
 	}
 	
 	@EventHandler
 	public void onQuit( PlayerQuitEvent event ) {
 		
 		Player player = event.getPlayer();
+		String playerUUID = player.getUniqueId().toString().replace("-", "");
 		
 		commands.swapChannel(player, "General");
+		playerChannels.remove(playerUUID);
 	}
 	
 	@EventHandler
@@ -71,9 +74,8 @@ public class EventClass implements Listener {
 		Player player = event.getPlayer();
 		String playerUUID = player.getUniqueId().toString().replace("-", "");
 		
-		String activeChannel = cfManager.get("players.yml", playerUUID + ".activeChannel");
-		char channelChar = activeChannel.charAt(0);
-		ChatChannel channel = commands.getChannel(activeChannel);
+		ChatChannel channel = commands.getChannel(playerChannels.get(playerUUID));
+		char channelChar = channel.getName().charAt(0);
 		String channelColor = channel.getColor();
 		
 		/*
@@ -100,10 +102,12 @@ public class EventClass implements Listener {
 			}
 		}
 		
+		String rank = permissions.getGroup(playerUUID);
 		String sentText = permissionCheck(player, event.getMessage());
 		
 		//channel character
 		String message = channelColor + "[" + channelChar + "] " 
+				+ "&7[" + rank + "&7] "
 				//player name
 				+ "&f" + player.getDisplayName() + "&7: " 
 				//message
