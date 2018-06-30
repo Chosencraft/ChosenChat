@@ -25,6 +25,10 @@ public class Commands implements Listener,CommandExecutor {
 	private String cannotInto = "You don't have permission to use this command!";
 	//command list
 	public String cmd0 = "channel";
+	public String cmd1 = "g";
+	public String cmd2 = "t";
+	public String cmd3 = "h";
+	public String cmd4 = "l";
 	
 	public HashMap<String, ChatChannel> channels = new HashMap<String, ChatChannel>();
 	
@@ -38,17 +42,8 @@ public class Commands implements Listener,CommandExecutor {
 		events = ((MainChat) mainPlugin).events;
 		
 		Iterable<String> permanentChannels = cfManager.getConfig("channels.yml").getConfig().getKeys(false);
-		//Initial setup of General Global chat if it doesn't exist
-		//General chat's settings can be changed but it must exist or bad things happen
-		if ( cfManager.get("channels.yml", "General") == null ) {
-			ChatChannel general = new ChatChannel("General", true, false, false, "&2" );
-			channels.put("General", general);
-			cfManager.set("channels.yml", "General" + ".local", general.isLocal());
-			cfManager.set("channels.yml", "General" + ".private", general.isPrivate());
-			cfManager.set("channels.yml", "General" + ".color", general.getColor());
-			cfManager.set("channels.yml", "General" + ".shortCut", general.getName().toLowerCase());
-			System.out.println("created general chat because it did not exist");
-		}
+		
+		checkDefaults();
 		
 		//NEED TO INITIALIZE PERMANENT CHANNELS HERE
 		for ( String channel : permanentChannels ) {
@@ -62,6 +57,51 @@ public class Commands implements Listener,CommandExecutor {
 		}
 	}
 	
+	private void checkDefaults() {
+		//Initial setup of General Global chat if it doesn't exist
+		//General chat's settings can be changed but it must exist or bad things happen
+		if ( cfManager.get("channels.yml", "General") == null ) {
+			ChatChannel general = new ChatChannel("General", true, false, false, "&2" );
+			channels.put("General", general);
+			cfManager.set("channels.yml", "General" + ".local", general.isLocal());
+			cfManager.set("channels.yml", "General" + ".private", general.isPrivate());
+			cfManager.set("channels.yml", "General" + ".color", general.getColor());
+			cfManager.set("channels.yml", "General" + ".shortCut", general.getName().toLowerCase());
+			System.out.println("created general chat because it did not exist");
+		}
+		
+		if ( cfManager.get("channels.yml", "Trade") == null ) {
+			ChatChannel general = new ChatChannel("Trade", true, false, false, "&6" );
+			channels.put("Trade", general);
+			cfManager.set("channels.yml", "Trade" + ".local", general.isLocal());
+			cfManager.set("channels.yml", "Trade" + ".private", general.isPrivate());
+			cfManager.set("channels.yml", "Trade" + ".color", general.getColor());
+			cfManager.set("channels.yml", "Trade" + ".shortCut", general.getName().toLowerCase());
+			System.out.println("created trade chat because it did not exist");
+		}
+		
+		if ( cfManager.get("channels.yml", "Help") == null ) {
+			ChatChannel general = new ChatChannel("Help", true, false, false, "&b" );
+			channels.put("Help", general);
+			cfManager.set("channels.yml", "Help" + ".local", general.isLocal());
+			cfManager.set("channels.yml", "Help" + ".private", general.isPrivate());
+			cfManager.set("channels.yml", "Help" + ".color", general.getColor());
+			cfManager.set("channels.yml", "Help" + ".shortCut", general.getName().toLowerCase());
+			System.out.println("created help chat because it did not exist");
+		}
+		
+		if ( cfManager.get("channels.yml", "Local") == null ) {
+			ChatChannel general = new ChatChannel("Local", true, true, false, "&e" );
+			channels.put("Local", general);
+			cfManager.set("channels.yml", "Local" + ".local", general.isLocal());
+			cfManager.set("channels.yml", "local" + ".private", general.isPrivate());
+			cfManager.set("channels.yml", "Local" + ".color", general.getColor());
+			cfManager.set("channels.yml", "Local" + ".shortCut", general.getName().toLowerCase());
+			System.out.println("created local chat because it did not exist");
+		}
+		
+	}
+
 	public void updateEvents( Plugin mainPlugin ) {
 		events = ((MainChat) mainPlugin).events;
 	}
@@ -97,10 +137,27 @@ public class Commands implements Listener,CommandExecutor {
 			}
 		
 			//actual commands
-			if ( command.getName().equalsIgnoreCase(cmd0) ) {
+			switch ( command.getName().toLowerCase() ) {
+			
+			case "channel":
 				channelCommand(player, activeChannel, args);
+				break;
+			case "g":
+				channelShortcut(player, args, "General");
+				break;
+			case "t":
+				channelShortcut(player, args, "Trade");
+				break;
+			case "h":
+				channelShortcut(player, args, "Help");
+				break;
+			case "l":
+				channelShortcut(player, args, "Local");
+				break;
+				
+			}
 			//channel shortcuts
-			} else {
+//			} else {
 //				Iterable<String> permanentChannels = cfManager.getConfig("channels.yml").getConfig().getKeys(false);
 //	WIP			
 //				for ( String channel : permanentChannels ) {
@@ -115,7 +172,7 @@ public class Commands implements Listener,CommandExecutor {
 //						break;
 //					}
 //				}
-			}
+			
 		}
 		return true;
 	}
@@ -219,7 +276,7 @@ public class Commands implements Listener,CommandExecutor {
 					for ( String s : stats) {
 						player.sendMessage(ChatColor.translateAlternateColorCodes('&', s));
 					}
-					player.sendMessage(ChatColor.RED + "Usage: /channel set <channel name> <setting> <value>");
+					player.sendMessage(ChatColor.RED + "Usage: /channel set <setting> <value>");
 					
 					break;
 				} else if ( args.length < 3 ) {
@@ -236,6 +293,19 @@ public class Commands implements Listener,CommandExecutor {
 			}
 		}
 		return true;
+	}
+	
+	private void channelShortcut( Player player, String[] args, String channel) {
+		
+		if ( args.length < 1 ) {
+			swapChannel(player, channel);
+		} else {
+			StringBuilder sb = new StringBuilder();
+			for ( String s : args ) {
+				sb.append(s + " ");
+			}	
+			events.sendMessage(player, channels.get("General"), sb.toString());
+		}
 	}
 
 	private String[] getChannelStats(String activeChannel) {

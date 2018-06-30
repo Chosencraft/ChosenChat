@@ -29,22 +29,15 @@ public class Permissions {
 	public Permissions( Plugin mainPlugin ) {
 		
 		cfManager = ((MainChat) mainPlugin).cfgm;
-		
+		if ( cfManager.get("groups.yml", "chosenchat.groups.default") == null ) {
+			cfManager.set("groups.yml", "default", "&7default");
+		}
 		
 		//need to loop thru all groups/ranks in config and add them to a list
 		Set<String> configGroups = cfManager.getConfig("groups.yml").getConfig().getKeys(false);
 		for ( String key : configGroups ) {
 			groups.put(key, cfManager.get("groups.yml", key));
 		}
-	}
-	
-	public String getGroup( String playerUUID ) {
-		return groups.get(playerUUID);
-	}
-	
-	public void setGroup( String playerUUID, String group) {
-		groups.put(playerUUID, group);
-		cfManager.set("groups.yml", playerUUID, group);
 	}
 	
 }

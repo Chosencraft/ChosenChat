@@ -8,3 +8,15 @@ commands:
   channel:
     usage: /<command>
     description: "Primary Channels Command"
+  g:
+    usage: /<g>
+    description: "General chat shortcut"
+  t:
+    usage: /<t>
+    description: "Trade chat shortcut"
+  h:
+    usage: /<h>
+    description: Help chat shortcut"
+  l:
+    usage: /<l>
+    description: "Local chat shortcut"

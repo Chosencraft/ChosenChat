@@ -12,8 +12,10 @@ import com.chosen.www.chat.MainChat;
 import com.chosen.www.chat.Permissions;
 import com.chosen.www.chat.commands.Commands;
 
+import java.util.Collection;
 import java.util.HashMap;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -27,6 +29,7 @@ public class EventClass implements Listener {
 	Permissions permissions;
 	
 	public HashMap<String, String> playerChannels = new HashMap<String, String>();
+	public HashMap<String, String> ranks = new HashMap<String, String>();
 	
 	public EventClass( Plugin mainPlugin ) {
 		plugin = mainPlugin;
@@ -55,9 +58,15 @@ public class EventClass implements Listener {
 		if ( cfManager.get("players.yml", playerUUID) == null) {
 			cfManager.set("players.yml", playerUUID, "General");
 			commands.getChannel("General").join(player);
-			permissions.setGroup(playerUUID, "&7default");
 			
 			plugin.getServer().getConsoleSender().sendMessage(ChatColor.AQUA + "new player " + player.getName() + " joined");
+		}
+
+		for ( String r : permissions.groups.keySet() ) {
+			if ( player.hasPermission(r) ) {
+				ranks.put(playerUUID, r);
+				break;
+			}
 		}
 		
 		playerChannels.put(playerUUID, cfManager.get("players.yml", playerUUID));
@@ -78,10 +87,19 @@ public class EventClass implements Listener {
 		
 		Player player = event.getPlayer();
 		String playerUUID = player.getUniqueId().toString().replace("-", "");
-		
+		String sentMessage = event.getMessage();
 		ChatChannel channel = commands.getChannel(playerChannels.get(playerUUID));
+		sendMessage(player, channel, sentMessage);
+		event.setCancelled(true);
+	}
+	
+	public void sendMessage( Player player, ChatChannel channel, String sentMessage ) {
+		
+		String playerUUID = player.getUniqueId().toString().replace("-", "");
 		char channelChar = channel.getName().charAt(0);
 		String channelColor = channel.getColor();
+		
+		Collection<? extends Player> recipients = Bukkit.getOnlinePlayers();
 		
 		/*
 		 * NEED TO ADD SUPPORT FOR PRIVATE AND LOCAL CHANNELS HERE
@@ -89,9 +107,9 @@ public class EventClass implements Listener {
 		 */
 		//remove recipients if channel is private
 		if ( channel.isPrivate() ) {
-			for ( Player p : event.getRecipients() ) {
+			for ( Player p : recipients ) {
 				if ( !channel.getPlayers().contains(p) ) {
-					event.getRecipients().remove(p);
+					recipients.remove(p);
 				}
 			}
 		}
@@ -99,16 +117,16 @@ public class EventClass implements Listener {
 		if ( channel.isLocal() ) {
 			Location mouth = player.getLocation();
 			
-			for ( Player p : event.getRecipients() ) {
+			for ( Player p : recipients ) {
 				Location ear = p.getLocation();
 				if ( mouth.distance(ear) > 100 ) {
-					event.getRecipients().remove(p);
+					recipients.remove(p);
 				}
 			}
 		}
 		
-		String rank = permissions.getGroup(playerUUID);
-		String sentText = permissionCheck(player, event.getMessage());
+		String rank = ranks.get(playerUUID);
+		String sentText = permissionCheck(player, sentMessage);
 		
 		//channel character
 		String message = channelColor + "[" + channelChar + "] " 
@@ -118,7 +136,10 @@ public class EventClass implements Listener {
 				//message
 				+ channelColor + sentText;
 		
-		event.setFormat(ChatColor.translateAlternateColorCodes('&', message));
+		for ( Player p : recipients ) {
+			p.sendMessage(ChatColor.translateAlternateColorCodes('&', message));
+		}
+		
 	}
 
 	private String permissionCheck(Player player, String message) {

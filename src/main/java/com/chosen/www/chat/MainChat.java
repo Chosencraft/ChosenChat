@@ -20,6 +20,10 @@ public class MainChat extends JavaPlugin {
 		
 		commands = new Commands(this);
 		this.getCommand("channel").setExecutor(commands);
+		this.getCommand("g").setExecutor(commands);
+		this.getCommand("t").setExecutor(commands);
+		this.getCommand("h").setExecutor(commands);
+		this.getCommand("l").setExecutor(commands);
 		
 		events = new EventClass(this);
 		commands.updateEvents(this);
