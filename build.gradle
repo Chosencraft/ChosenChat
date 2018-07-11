@@ -13,6 +13,7 @@ sourceCompatibility = 1.8
 repositories {
     mavenCentral()
 
+    maven { url = "https://ci.ender.zone/plugin/repository/everything/" }
     maven { url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/' }
     maven { url = 'https://oss.sonatype.org/content/repositories/snapshots' }
     mavenLocal() // This is needed for CraftBukkit and Spigot.
@@ -35,4 +36,6 @@ jar {
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
     compileOnly "org.spigotmc:spigot-api:1.12.2-R0.1-SNAPSHOT"
+    compileOnly group: 'net.milkbowl.vault', name: 'VaultAPI', version:'1.6'
+    compileOnly 'net.ess3:EssentialsX:2.15.0'
 }
