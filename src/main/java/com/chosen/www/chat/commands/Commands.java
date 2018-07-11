@@ -47,6 +47,9 @@ public class Commands implements Listener,CommandExecutor {
 		
 		//NEED TO INITIALIZE PERMANENT CHANNELS HERE
 		for ( String channel : permanentChannels ) {
+			
+			System.out.println(channel);
+			
 			boolean permanent = true;
 			boolean local = cfManager.get("channels.yml", channel + ".local");
 			boolean locked = cfManager.get("channels.yml", channel + ".private");
@@ -94,7 +97,7 @@ public class Commands implements Listener,CommandExecutor {
 			ChatChannel general = new ChatChannel("Local", true, true, false, "&e" );
 			channels.put("Local", general);
 			cfManager.set("channels.yml", "Local" + ".local", general.isLocal());
-			cfManager.set("channels.yml", "local" + ".private", general.isPrivate());
+			cfManager.set("channels.yml", "Local" + ".private", general.isPrivate());
 			cfManager.set("channels.yml", "Local" + ".color", general.getColor());
 			cfManager.set("channels.yml", "Local" + ".shortCut", general.getName().toLowerCase());
 			System.out.println("created local chat because it did not exist");
