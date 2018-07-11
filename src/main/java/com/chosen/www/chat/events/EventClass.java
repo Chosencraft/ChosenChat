@@ -74,7 +74,7 @@ public class EventClass implements Listener {
 	
 	@EventHandler
 	public void onQuit( PlayerQuitEvent event ) {
-		
+
 		Player player = event.getPlayer();
 		String playerUUID = player.getUniqueId().toString().replace("-", "");
 		
