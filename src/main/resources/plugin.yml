@@ -3,6 +3,8 @@ author: newton17
 version: 1.0
 main: com.chosen.www.chat.MainChat
 description: Chat formatting plugin for adding separate chat channels with different properties
+depend: [Vault,Essentials]
+
 
 commands:
   channel:
