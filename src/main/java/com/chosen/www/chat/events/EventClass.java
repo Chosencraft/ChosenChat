@@ -91,6 +91,7 @@ public class EventClass implements Listener {
 		ChatChannel channel = commands.getChannel(playerChannels.get(playerUUID));
 		sendMessage(player, channel, sentMessage);
 		event.setCancelled(true);
+		
 	}
 	
 	public void sendMessage( Player player, ChatChannel channel, String sentMessage ) {

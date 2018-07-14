@@ -20,6 +20,16 @@ public class MainChat extends JavaPlugin {
 		
 		commands = new Commands(this);
 		this.getCommand("channel").setExecutor(commands);
+		
+//		Iterable<String> permanentChannels = cfgm.getConfig("channels.yml").getConfig().getKeys(false);
+//		for ( String channel : permanentChannels ) {
+//			
+//			String shortCut = cfgm.get("channels.yml", channel + ".shortCut");
+//			System.out.println("trying to register " + shortCut + " as a channel shortcut command");
+//			this.getCommand(shortCut).setExecutor(commands);
+//			this.getCommand("" + shortCut.charAt(0)).setExecutor(commands);
+//		}
+		
 		this.getCommand("g").setExecutor(commands);
 		this.getCommand("t").setExecutor(commands);
 		this.getCommand("h").setExecutor(commands);
