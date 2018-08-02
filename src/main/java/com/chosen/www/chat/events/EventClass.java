@@ -12,6 +12,7 @@ import com.chosen.www.chat.MainChat;
 import com.chosen.www.chat.Permissions;
 import com.chosen.www.chat.commands.Commands;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 
@@ -100,8 +101,7 @@ public class EventClass implements Listener {
 		char channelChar = channel.getName().charAt(0);
 		String channelColor = channel.getColor();
 		
-		Collection<? extends Player> recipients = Bukkit.getOnlinePlayers();
-		
+		ArrayList<Player> recipients = new ArrayList<Player>(Bukkit.getOnlinePlayers());
 		/*
 		 * NEED TO ADD SUPPORT FOR PRIVATE AND LOCAL CHANNELS HERE
 		 * BASED ON CHANNEL PRIVACY AND LOCALNESS

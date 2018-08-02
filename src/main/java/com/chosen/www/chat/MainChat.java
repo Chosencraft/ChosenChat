@@ -23,8 +23,7 @@ public class MainChat extends JavaPlugin {
 	// integration with gradle wasn't happening
 	// Use this to check if player is muted
 	public static Essentials essentials;
-
-
+	
 	public ConfigManager cfgm;
 	public Commands commands;
 	public EventClass events;
@@ -35,7 +34,7 @@ public class MainChat extends JavaPlugin {
 		setupChat();
 		setupPermissions();
 		setupEssentials();
-
+		
 		loadConfigManager();
 
 		commands = new Commands(this);
