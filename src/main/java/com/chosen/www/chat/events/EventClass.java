@@ -11,6 +11,8 @@ import com.chosen.www.chat.ConfigManager;
 import com.chosen.www.chat.MainChat;
 import com.chosen.www.chat.Permissions;
 import com.chosen.www.chat.commands.Commands;
+import com.earth2me.essentials.Essentials;
+import com.earth2me.essentials.User;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -27,6 +29,8 @@ public class EventClass implements Listener {
 	Plugin plugin;
 	ConfigManager cfManager;
 	Commands commands;
+	Essentials essentials;
+	
 	Permissions permissions;
 	
 	public HashMap<String, String> playerChannels = new HashMap<String, String>();
@@ -36,6 +40,7 @@ public class EventClass implements Listener {
 		plugin = mainPlugin;
 		cfManager = ((MainChat) mainPlugin).cfgm;
 		commands = ((MainChat)mainPlugin).commands;
+		essentials = MainChat.essentials;
 		permissions = new Permissions(mainPlugin);
 		
 	}
@@ -87,6 +92,13 @@ public class EventClass implements Listener {
 	public void onChat(AsyncPlayerChatEvent event) {
 		
 		Player player = event.getPlayer();
+		User user = essentials.getUser(player);
+		
+		if ( user.isMuted() ) {
+			event.setCancelled(true);
+			return;
+		}
+		
 		String playerUUID = player.getUniqueId().toString().replace("-", "");
 		String sentMessage = event.getMessage();
 		ChatChannel channel = commands.getChannel(playerChannels.get(playerUUID));
