@@ -138,7 +138,9 @@ public class EventClass implements Listener {
 			}
 		}
 		
-		String rank = ranks.get(playerUUID);
+		User user = essentials.getUser(player);
+		
+		String rank = user.getGroup();
 		String sentText = permissionCheck(player, sentMessage);
 		
 		//channel character
