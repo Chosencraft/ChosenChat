@@ -1,5 +1,6 @@
 package com.chosen.www.chat.commands;
 
+import java.util.Arrays;
 import java.util.HashMap;
 
 import org.bukkit.ChatColor;
@@ -179,7 +180,7 @@ public class Commands implements Listener,CommandExecutor {
 	
 	String[] messages = {
 			ChatColor.GREEN + "-----{Channel Commands}-----",
-			ChatColor.RED + "Usage: /channel <option>",
+			ChatColor.RED + "Usage: /channel [channel name] <option>",
 			ChatColor.YELLOW + "help: shows this message",
 			ChatColor.YELLOW + "join: joins the specified channel",
 			ChatColor.YELLOW + "list: shows all available channels",
@@ -189,7 +190,7 @@ public class Commands implements Listener,CommandExecutor {
 			
 	};
 	
-	private boolean channelCommand( Player player, String activeChannel ,String[] args) {
+	private boolean channelCommand( Player player, String activeChannel , String[] args) {
 		if ( args.length < 1 ) {
 			//add a help message
 			String[] stats = getChannelStats(activeChannel);
@@ -289,6 +290,10 @@ public class Commands implements Listener,CommandExecutor {
 				
 			default:
 				
+				String selectedChannel = args[0];
+				String[] newArgs = Arrays.copyOfRange(args, 1, args.length);
+				System.out.println("operating a command on the " + selectedChannel + " channel...");
+				channelCommand(player, selectedChannel, newArgs );
 				break;
 			}
 		}
