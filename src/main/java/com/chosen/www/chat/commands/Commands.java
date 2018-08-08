@@ -1,5 +1,6 @@
 package com.chosen.www.chat.commands;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
@@ -241,8 +242,9 @@ public class Commands implements Listener,CommandExecutor {
 				if ( channels.get(activeChannel) == null ) {
 					player.sendMessage(ChatColor.RED + "You aren't in a Channel! You can only delete the channel you are in");
 				} else {
-					for ( Player p : channels.get(activeChannel).getPlayers() ) {
-					swapChannel(p, "General");
+					ArrayList<Player> channelUsers = channels.get(activeChannel).getPlayers();
+					for ( int i = 0; i < channelUsers.size(); i++ ) {
+						swapChannel(channelUsers.get(i), "General");
 					}
 					channels.remove(activeChannel);
 				}
