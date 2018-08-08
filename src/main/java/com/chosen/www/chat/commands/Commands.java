@@ -240,7 +240,10 @@ public class Commands implements Listener,CommandExecutor {
 				}
 			
 				if ( channels.get(activeChannel) == null ) {
-					player.sendMessage(ChatColor.RED + "You aren't in a Channel! You can only delete the channel you are in");
+					player.sendMessage(ChatColor.RED + "You aren't in a channel! You can only delete channels that exist.");
+				} else if ( activeChannel.equalsIgnoreCase("general") ) {
+					System.out.println("someone tried to delete the General channel");
+					player.sendMessage(ChatColor.RED + "General chat is required for the plugin to work, please don't delete it!");
 				} else {
 					ArrayList<Player> channelUsers = channels.get(activeChannel).getPlayers();
 					for ( int i = 0; i < channelUsers.size(); i++ ) {
