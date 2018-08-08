@@ -315,6 +315,11 @@ public class Commands implements Listener,CommandExecutor {
 
 	private String[] getChannelStats(String activeChannel) {
 		ChatChannel channel = channels.get(activeChannel);
+		
+		if ( channel == null ) {
+			return new String[] {ChatColor.RED + "That Channel doesn't exist! Remember Channel names are case-sensitive!"};
+		}
+		
 		String color = channel.getColor();
 		String[] stats = {
 				color + "Current Channel: " + ChatColor.WHITE + channel.getName(),
